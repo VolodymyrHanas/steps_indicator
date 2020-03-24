@@ -19,8 +19,8 @@ class StepsIndicator extends StatelessWidget {
   final double selectedStepSize;
   final double selectedStepBorderSize;
   final Widget doneStepWidget;
-  final Widget unselectedStepWidget;
-  final Widget selectedStepWidget;
+  final Widget Function(int) unselectedStepWidget;
+  final Widget Function(int) selectedStepWidget;
 
   const StepsIndicator(
       {this.selectedStep = 0,
@@ -71,7 +71,7 @@ class StepsIndicator extends StatelessWidget {
       return (selectedStep == i
           ? Row(
               children: <Widget>[
-                stepSelectedWidget(),
+                stepSelectedWidget(i),
                 selectedStep == nbSteps ? stepLineDoneWidget() : Container(),
                 i != nbSteps - 1 ? stepLineUndoneWidget() : Container()
               ],
@@ -85,7 +85,7 @@ class StepsIndicator extends StatelessWidget {
                 )
               : Row(
                   children: <Widget>[
-                    stepUnselectedWidget(),
+                    stepUnselectedWidget(i),
                     i != nbSteps - 1 ? stepLineUndoneWidget() : Container()
                   ],
                 ));
@@ -94,7 +94,7 @@ class StepsIndicator extends StatelessWidget {
       return (selectedStep == i
           ? Column(
               children: <Widget>[
-                stepSelectedWidget(),
+                stepSelectedWidget(i),
                 selectedStep == nbSteps ? stepLineDoneWidget() : Container(),
                 i != nbSteps - 1 ? stepLineUndoneWidget() : Container()
               ],
@@ -108,18 +108,18 @@ class StepsIndicator extends StatelessWidget {
                 )
               : Column(
                   children: <Widget>[
-                    stepUnselectedWidget(),
+                    stepUnselectedWidget(i),
                     i != nbSteps - 1 ? stepLineUndoneWidget() : Container()
                   ],
                 ));
     }
   }
 
-  Widget stepSelectedWidget() {
+  Widget stepSelectedWidget(int index) {
     return Hero(
       tag: 'selectedStep',
       child: selectedStepWidget != null
-          ? selectedStepWidget
+          ? selectedStepWidget(index + 1)
           : ClipRRect(
               borderRadius: BorderRadius.circular(selectedStepSize),
               child: Container(
@@ -150,9 +150,9 @@ class StepsIndicator extends StatelessWidget {
           );
   }
 
-  Widget stepUnselectedWidget() {
+  Widget stepUnselectedWidget(int index) {
     return unselectedStepWidget != null
-        ? unselectedStepWidget
+        ? unselectedStepWidget(index + 1)
         : ClipRRect(
             borderRadius: BorderRadius.circular(unselectedStepSize),
             child: Container(
